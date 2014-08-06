@@ -2,6 +2,9 @@ open Config
 open Utils
 open Unix
 
+(* FIXME: A lot of the following code should be generated from the
+   FIXME: API description. *)
+
 let general_options = [
   "-v",
   Arg.Set verbose_mode,
@@ -10,7 +13,7 @@ let general_options = [
 
 let options o = o @ general_options
 
-let login ?username ?password () =
+let login ?(register=false) ?username ?password () =
   let if_none x f = match x with None -> f () | Some x -> x in
   let username = if_none username (fun () ->
     Printf.printf "login: %!";
@@ -24,24 +27,29 @@ let login ?username ?password () =
     s
   )
   in
-  call_api "login" ~posts:[
+  call_api (if register then "register" else "login") ~posts:[
     ("login",    username);
     ("password", password)
   ] []
 
-let login_command =
+let sign_command register =
   let username = ref None in
   let password = ref None in
-  process "login"
+  let command_name = if register then "register" else "login" in
+  process command_name
     (options [
       "--dojo", Arg.String (Config.set_url), " Specify a Dojo URL.";
       "--username", Arg.String (set_opt username), " Specify a username.";
       "--password", Arg.String (set_opt password), " Specify a password.";
     ])
-    "hjc login"
+    ("hjc " ^ command_name)
     (no_extra_arguments (fun () ->
-      login ?username:!username ?password:!password ())
+      login ~register ?username:!username ?password:!password ())
     )
+
+let login_command = sign_command false
+
+let register_command = sign_command true
 
 let logout () =
   call_api "logout" ~posts:[] []
@@ -60,6 +68,19 @@ let whoami_command =
     (options [])
     "hjc whoami"
     (no_extra_arguments whoami)
+
+let chroot = function
+  | [ path ] ->
+    call_api "chroot" ~posts:["path", path] []
+  | _ ->
+    Printf.eprintf "Invalid usage of chroot command.\n";
+    exit 1
+
+let chroot_command =
+  process "chroot"
+    (options [])
+    ("hjc chroot [path]")
+    chroot
 
 let focus = function
   | [ exercise ] ->
