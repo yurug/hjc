@@ -82,6 +82,32 @@ let chroot_command =
     ("hjc chroot [path]")
     chroot
 
+let get_user_info = function
+  | [ cmd ] ->
+    call_api "get_user_info" ~posts:["cmd", cmd] []
+  | _ ->
+    Printf.eprintf "Invalid usage of get_user_info command.\n";
+    exit 1
+
+let get_user_info_command =
+  process "get_user_info"
+    (options [])
+    ("hjc get_user_info [cmd]")
+    get_user_info
+
+let create_exercise = function
+  | [ name ] ->
+    call_api "create_exercise" ~posts:["name", name] []
+  | _ ->
+    Printf.eprintf "Invalid usage of create_exercise command.\n";
+    exit 1
+
+let create_exercise_command =
+  process "create_exercise"
+    (options [])
+    ("hjc create_exercise [name]")
+    create_exercise
+
 let focus = function
   | [ exercise ] ->
     let url = "/exercises/" ^ exercise in

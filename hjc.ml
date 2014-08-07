@@ -11,6 +11,8 @@ let _ = run_command [
   logout_command;
   whoami_command;
   chroot_command;
+  get_user_info_command;
+  create_exercise_command;
   focus_command;
   update_command;
   submit_command
@@ -18,14 +20,16 @@ let _ = run_command [
   "usage: hjc <command> [<args>]\n\
     \n\
     The available commands are:\n\
-    \  register    Register\n\
-    \  login       Authenticate the user on the hacking dojo\n\
-    \  logout      Exit the hacking dojo\n\
-    \  whoami      Returns the authenticated user login\n\
-    \  chroot      Change the root of the system\n\
-    \  focus       Focus on an exercise\n\
-    \  update      Update an exercise description (for teacher)\n\
-    \  submit      Submit an answer to a question\n\
+    \  register              Register\n\
+    \  login                 Authenticate the user on the hacking dojo\n\
+    \  logout                Exit the hacking dojo\n\
+    \  whoami                Returns the authenticated user login\n\
+    \  chroot                Change the root of the system\n\
+    \  get_user_info         Set get_user_info command\n\
+    \  create_exercise       Create a fresh exercise\n\
+    \  focus                 Focus on an exercise\n\
+    \  update                Update an exercise description\n\
+    \  submit                Submit an answer to a question\n\
     \n\
     See 'hj <command> -help' for more information on a specific command.\n\
     "
