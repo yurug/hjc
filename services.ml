@@ -216,8 +216,9 @@ let exercise_download_command =
     ("hjc exercise_download [resource_name]")
     exercise_download
 
-let exercise_ls = function
-  | [ options; filter ] ->
+let exercise_ls show_all = function
+  | [ filter ] ->
+    let options = if show_all () then "--all" else "" in
     on_exercise (fun exo ->
       call_api "exercise_ls" ~posts:[
         "identifier", exo;
@@ -229,7 +230,10 @@ let exercise_ls = function
     exit 1
 
 let exercise_ls_command =
+  let show_all = ref false in
   process "exercise_ls"
-    (options [])
-    ("hjc exercise_ls {--all} filter")
-    exercise_ls
+    (options [
+      "--all", Arg.Set show_all, " Show all versions.";
+    ])
+    ("hjc exercise_ls filter")
+    (exercise_ls (fun () -> !show_all))
