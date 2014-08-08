@@ -110,7 +110,7 @@ let create_exercise_command =
 
 let focus = function
   | [ exercise ] ->
-    let url = "/exercises/" ^ exercise in
+    let url = "/exercise/" ^ exercise in
     Config.set_focus url;
     Printf.printf "Focus on `%s'.\n" url
   | _ ->
@@ -153,21 +153,26 @@ let read file =
     Printf.eprintf "Error while reading input file.\n";
     exit 1
 
+let on_exercise f =
+  match Config.get_focus () with
+    | None ->
+      Printf.eprintf "First, focus on some exercise using `hjc focus'.\n";
+      exit 1
+    | Some exo ->
+      f exo
+
+
 let update = function
-  | [ file ] -> begin
-    match Config.get_focus () with
-      | None ->
-        Printf.eprintf "First, focus on some exercise using `hjc focus'.\n";
-        exit 1
-      | Some exo ->
-        let postprocess = Printf.sprintf "sed s/this/%s/g" file in
-        call_api ~postprocess "update" ~forms:[
-          "id", exo;
-          "content", "@" ^ file
-        ] []
-  end
+  | [ file ] ->
+    on_exercise (fun exo ->
+      let postprocess = Printf.sprintf "sed s/this/%s/g" file in
+      call_api ~postprocess "update" ~forms:[
+        "id", exo;
+        "content", "@" ^ file
+      ] []
+    )
   | _ ->
-    Printf.eprintf "Invalid usage of submit command.\n";
+    Printf.eprintf "Invalid usage of update command.\n";
     exit 1
 
 let update_command =
@@ -175,3 +180,22 @@ let update_command =
     (options [])
     "hjc update [description_file]"
     update
+
+let exercise_upload = function
+  | [ resource_name; file ] -> begin
+    on_exercise (fun exo ->
+        call_api "exercise_upload" ~forms:[
+          "identifier", exo;
+          "resource_name", resource_name;
+          "file", "@" ^ file
+        ] [])
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_upload command.\n";
+    exit 1
+
+let exercise_upload_command =
+  process "exercise_upload"
+    (options [])
+    "hjc exercise_upload [ressource_name] [file]"
+    exercise_upload
