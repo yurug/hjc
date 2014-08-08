@@ -161,7 +161,6 @@ let on_exercise f =
     | Some exo ->
       f exo
 
-
 let update = function
   | [ file ] ->
     on_exercise (fun exo ->
@@ -199,3 +198,20 @@ let exercise_upload_command =
     (options [])
     "hjc exercise_upload [ressource_name] [file]"
     exercise_upload
+
+let exercise_download = function
+  | [ name ] ->
+    on_exercise (fun exo ->
+      call_api "exercise_download" ~posts:[
+        "identifier", exo;
+        "resource_name", name
+      ] [])
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_download command.\n";
+    exit 1
+
+let exercise_download_command =
+  process "exercise_download"
+    (options [])
+    ("hjc exercise_download [resource_name]")
+    exercise_download
