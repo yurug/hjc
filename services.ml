@@ -95,20 +95,20 @@ let get_user_info_command =
     ("hjc get_user_info [cmd]")
     get_user_info
 
-let create_exercise = function
+let exercise_create = function
   | [ name ] ->
-    call_api "create_exercise" ~posts:["name", name] []
+    call_api "exercise_create" ~posts:["name", name] []
   | _ ->
-    Printf.eprintf "Invalid usage of create_exercise command.\n";
+    Printf.eprintf "Invalid usage of exercise_create command.\n";
     exit 1
 
-let create_exercise_command =
-  process "create_exercise"
+let exercise_create_command =
+  process "exercise_create"
     (options [])
-    ("hjc create_exercise [name]")
-    create_exercise
+    ("hjc exercise_create [name]")
+    exercise_create
 
-let focus = function
+let exercise_focus = function
   | [ exercise ] ->
     let url = "/exercise/" ^ exercise in
     Config.set_focus url;
@@ -117,11 +117,11 @@ let focus = function
     Printf.eprintf "Invalid usage of focus command.\n";
     exit 1
 
-let focus_command =
-  process "focus"
+let exercise_focus_command =
+  process "exercise_focus"
     (options [])
-    "hjc focus [exercise]"
-    focus
+    "hjc exercise_focus [identifier]"
+    exercise_focus
 
 let submit = function
   | [ question; file ] ->

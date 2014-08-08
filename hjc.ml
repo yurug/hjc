@@ -12,8 +12,8 @@ let _ = run_command [
   whoami_command;
   chroot_command;
   get_user_info_command;
-  create_exercise_command;
-  focus_command;
+  exercise_create_command;
+  exercise_focus_command;
   exercise_upload_command;
   exercise_download_command;
   update_command;
@@ -28,8 +28,8 @@ let _ = run_command [
     \  whoami                Returns the authenticated user login\n\
     \  chroot                Change the root of the system\n\
     \  get_user_info         Set get_user_info command\n\
-    \  create_exercise       Create a fresh exercise\n\
-    \  focus                 Focus on an exercise\n\
+    \  exercise_create       Create a fresh exercise\n\
+    \  exercise_focus        Focus on an exercise\n\
     \  exercise_upload       Upload a resource for an exercise\n\
     \  exercise_download     Download a resource of an exercise\n\
     \  update                Update an exercise description\n\
