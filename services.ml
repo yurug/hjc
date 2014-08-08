@@ -215,3 +215,21 @@ let exercise_download_command =
     (options [])
     ("hjc exercise_download [resource_name]")
     exercise_download
+
+let exercise_ls = function
+  | [ options; filter ] ->
+    on_exercise (fun exo ->
+      call_api "exercise_ls" ~posts:[
+        "identifier", exo;
+        "options", options;
+        "filter", filter;
+      ] [])
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_ls command.\n";
+    exit 1
+
+let exercise_ls_command =
+  process "exercise_ls"
+    (options [])
+    ("hjc exercise_ls {--all} filter")
+    exercise_ls
