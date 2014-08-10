@@ -199,22 +199,26 @@ let exercise_upload_command =
     "hjc exercise_upload [ressource_name] [file]"
     exercise_upload
 
-let exercise_download = function
+let exercise_download version = function
   | [ name ] ->
     on_exercise (fun exo ->
       call_api "exercise_download" ~posts:[
         "identifier", exo;
-        "resource_name", name
+        "resource_name", name;
+        "version", (version ())
       ] [])
   | _ ->
     Printf.eprintf "Invalid usage of exercise_download command.\n";
     exit 1
 
 let exercise_download_command =
+  let version = ref "" in
   process "exercise_download"
-    (options [])
+    (options [
+      "--version", Arg.Set_string version, " Download a specific version."
+    ])
     ("hjc exercise_download [resource_name]")
-    exercise_download
+    (exercise_download (fun () -> !version))
 
 let exercise_ls show_all = function
   | [ filter ] ->
