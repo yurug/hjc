@@ -275,3 +275,18 @@ let exercise_update_command =
     (options [])
     ("hjc exercise_update")
     exercise_update
+
+let exercise_push = function
+  | [ file ] -> begin
+    exercise_upload [ "source.aka"; file ];
+    exercise_update []
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_push command.\n";
+    exit 1
+
+let exercise_push_command =
+  process "exercise_push"
+    (options [])
+    "hjc exercise_push [file]"
+    exercise_push
