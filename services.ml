@@ -1,6 +1,7 @@
 open Config
 open Utils
 open Unix
+open Printf
 
 (* FIXME: A lot of the following code should be generated from the
    FIXME: API description. *)
@@ -10,6 +11,23 @@ let general_options = [
   Arg.Set verbose_mode,
   " Set verbose mode."
 ]
+
+let print_raw_json doc =
+  Yojson.Safe.pretty_to_channel Pervasives.stdout doc;
+  print_newline ();
+  flush Pervasives.stdout
+
+let print_json = function
+  | (`Assoc l) as doc when List.mem_assoc "status" l ->
+    begin try match List.assoc "status" l with
+      | `String s -> printf "%s\n%!" s
+      | _ -> raise Not_found
+      with _ -> print_raw_json doc
+    end
+  | doc -> print_raw_json doc
+
+let call_api service ?postprocess ?forms ?posts gets =
+  print_json (Utils.call_api service ?postprocess ?forms ?posts gets)
 
 let options o = o @ general_options
 

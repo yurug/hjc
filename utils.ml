@@ -10,6 +10,7 @@ let command cmd =
 
 let _ = command (Printf.sprintf "touch %s" cookie_file)
 
+(* FIXME: Remove this dependency. It is due to Url.make_encoded_parameters. *)
 open Ocsigen_lib
 
 let curl ?postprocess ?(forms = []) ?posts url =
@@ -22,14 +23,13 @@ let curl ?postprocess ?(forms = []) ?posts url =
     | None -> ""
   in
   let cmd =
-    Printf.sprintf "%s -k --cookie %s --cookie-jar %s %s %s %s %s"
+    Printf.sprintf "%s -s -k --cookie %s --cookie-jar %s %s %s %s %s"
       curl_executable cookie_file cookie_file posts forms url
       (match postprocess with
         | None -> ""
         | Some cmd -> "| " ^ cmd)
   in
-  let status = command cmd in
-  (status = 0)
+  Yojson.Safe.from_channel (Unix.open_process_in cmd)
 
 let call_api service ?postprocess ?forms ?posts gets =
   curl

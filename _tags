@@ -1,2 +1,2 @@
-<*> : package(threads), package(ocsigenserver), thread
-<*.native> : package(threads), package(ocsigenserver), thread
+<*> : package(threads), package(ocsigenserver), package(yojson), thread
+<*.native> : package(threads), package(ocsigenserver), package(yojson), thread
