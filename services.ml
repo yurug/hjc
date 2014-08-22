@@ -241,3 +241,19 @@ let exercise_ls_command =
     ])
     ("hjc exercise_ls filter")
     (exercise_ls (fun () -> !show_all))
+
+let exercise_update = function
+  | [] ->
+    on_exercise (fun exo ->
+      call_api "exercise_update" ~posts:[
+        "identifier", exo
+      ] [])
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_update command.\n";
+    exit 1
+
+let exercise_update_command =
+  process "exercise_update"
+    (options [])
+    ("hjc exercise_update")
+    exercise_update
