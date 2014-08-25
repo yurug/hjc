@@ -1,0 +1,13 @@
+data template ('a) =
+| TAtom (string, template ('a))
+| TCode ('a, template ('a))
+| TNil
+
+data document_item =
+| Section (string)
+| SubSection (string)
+| Paragraph (document)
+
+and document =
+  Document (template (document_item))
+
