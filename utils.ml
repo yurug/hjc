@@ -68,8 +68,8 @@ let no_extra_arguments f = function
 let run_command cs general_usage_msg =
   try
     List.assoc Sys.argv.(1) cs Sys.argv.(1)
-  with _ ->
-    Printf.eprintf general_usage_msg;
+  with e ->
+    Printf.eprintf "Error: %s\n" (Printexc.to_string e);
     exit 1
 
 let set_opt r x = (r := Some x)

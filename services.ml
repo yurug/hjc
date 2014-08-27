@@ -126,11 +126,13 @@ let exercise_create_command =
     ("hjc exercise_create [name]")
     exercise_create
 
+let exercise_url exercise =
+  "/exercise/" ^ exercise
+
 let exercise_focus = function
   | [ exercise ] ->
-    let url = "/exercise/" ^ exercise in
-    Config.set_focus url;
-    Printf.printf "Focus on `%s'.\n" url
+    Config.set_focus (exercise_url exercise);
+    Printf.printf "Focus on `%s'.\n" exercise
   | _ ->
     Printf.eprintf "Invalid usage of focus command.\n";
     exit 1
@@ -201,11 +203,11 @@ let update_command =
 let exercise_upload = function
   | [ resource_name; file ] -> begin
     on_exercise (fun exo ->
-        call_api "exercise_upload" ~forms:[
-          "identifier", exo;
-          "resource_name", resource_name;
-          "file", "@" ^ file
-        ] [])
+      call_api "exercise_upload" ~forms:[
+        "identifier", exo;
+        "resource_name", resource_name;
+        "file", "@" ^ file
+      ] [])
   end
   | _ ->
     Printf.eprintf "Invalid usage of exercise_upload command.\n";
@@ -260,10 +262,10 @@ let exercise_ls_command =
     ("hjc exercise_ls filter")
     (exercise_ls (fun () -> !show_all))
 
-let exercise_update = function
+let exercise_update ?postprocess = function
   | [] ->
     on_exercise (fun exo ->
-      call_api "exercise_update" ~posts:[
+      call_api ?postprocess "exercise_update" ~posts:[
         "identifier", exo
       ] [])
   | _ ->
@@ -281,7 +283,7 @@ let optional_focus e f =
   | None -> f ()
   | Some exercise ->
     let old_url = Config.get_focus () in
-    Config.set_focus exercise;
+    Config.set_focus (exercise_url exercise);
     f ();
     match old_url with
       | None -> ()
@@ -289,8 +291,9 @@ let optional_focus e f =
 
 let exercise_push exercise = function
   | [ file ] -> optional_focus exercise (fun () ->
+    let postprocess = Printf.sprintf "sed s/this/%s/g" file in
     exercise_upload [ "source.aka"; file ];
-    exercise_update []
+    exercise_update ~postprocess []
   )
   | _ ->
     Printf.eprintf "Invalid usage of exercise_push command.\n";

@@ -5,7 +5,7 @@ def f = { x y => x }
 def g = { => y }
 def z = f x y
 
-import exercise/std
+import /std
 
 def t = [Yo [z] Man]
 
