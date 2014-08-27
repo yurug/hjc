@@ -276,17 +276,32 @@ let exercise_update_command =
     ("hjc exercise_update")
     exercise_update
 
-let exercise_push = function
-  | [ file ] -> begin
+let optional_focus e f =
+  match e with
+  | None -> f ()
+  | Some exercise ->
+    let old_url = Config.get_focus () in
+    Config.set_focus exercise;
+    f ();
+    match old_url with
+      | None -> ()
+      | Some exercise -> Config.set_focus exercise
+
+let exercise_push exercise = function
+  | [ file ] -> optional_focus exercise (fun () ->
     exercise_upload [ "source.aka"; file ];
     exercise_update []
-  end
+  )
   | _ ->
     Printf.eprintf "Invalid usage of exercise_push command.\n";
     exit 1
 
 let exercise_push_command =
+  let exercise = ref None in
   process "exercise_push"
-    (options [])
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Specify an exercise to focus on.";
+    ])
     "hjc exercise_push [file]"
-    exercise_push
+    (fun o -> exercise_push !exercise o)
