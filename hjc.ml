@@ -19,6 +19,7 @@ let _ = run_command [
   exercise_ls_command;
   exercise_update_command;
   exercise_push_command;
+  exercise_questions_command;
   update_command;
   submit_command
 ]

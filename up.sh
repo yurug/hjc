@@ -18,3 +18,5 @@ rm -fr `pwd`/test
 ./hjc exercise_ls --all test2
 ./hjc exercise_upload source.aka source.aka
 ./hjc exercise_update
+
+./hjc exercise_push --on test exo.aka

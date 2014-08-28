@@ -308,3 +308,25 @@ let exercise_push_command =
     ])
     "hjc exercise_push [file]"
     (fun o -> exercise_push !exercise o)
+
+let exercise_questions exercise = function
+  | [] ->
+    optional_focus exercise (fun () ->
+      on_exercise (fun exo ->
+      call_api "exercise_questions" ~posts:[
+        "identifier", exo
+      ] [])
+    )
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_questions command.\n";
+    exit 1
+
+let exercise_questions_command =
+  let exercise = ref None in
+  process "exercise_questions"
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Retrieve exercise questions.";
+    ])
+    ("hjc exercise_questions")
+    (fun x -> exercise_questions !exercise x)

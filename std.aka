@@ -1,3 +1,6 @@
+data questions_target =
+| ForUser (string)
+
 data list ('a) =
 | Nil
 | Cons ('a, list ('a))
@@ -20,22 +23,31 @@ data text = {
 data statement =
 | Text (template (text))
 
-data qcm = {
-  choices          : list (statement);
-  expected_answers : list (int)
-}
-
 data context =
-| QCM (qcm)
-
-data question = {
-  title     : template (text);
-  statement : statement;
-  context   : context
-}
+| QCM (list (statement), list (int))
 
 data questions =
-| Question (question)
-| Section (template (string), questions)
-| Sequence (template (questions))
+| Question (template (string), template (statement), template (context))
+| Section (template (string), template (questions))
 
+def section title questions = Section title questions
+
+def question id statement context = Question id statement context
+
+def text t = Text t
+
+def choices t =
+  t ? {
+  | TAtom s t => Cons (Text (TAtom s TNil)) (choices t)
+  | TCode s t => Cons s (choices t)
+  | TNil => Nil
+  }
+
+def expected_choices t =
+  t ? {
+  {* We ignore trailing strings, since we are expecting a list of
+     integers. *}
+  | TAtom s t => expected_choices t
+  | TCode s t => Cons s (expected_choices t)
+  | TNil => Nil
+  }
