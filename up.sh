@@ -24,3 +24,9 @@ rm -fr `pwd`/test
 ./hjc exercise_answer --on test q1 "choose:1"
 ./hjc exercise_evaluation_state --on test q1 
 
+./hjc machinist_create debian
+./hjc machinist_upload debian key1 id_rsa
+./hjc machinist_set_logins debian test key1
+./hjc machinist_set_addresses debian 127.0.0.1 22
+
+

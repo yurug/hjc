@@ -377,3 +377,143 @@ let exercise_evaluation_state_command =
     ])
     ("hjc exercise_evaluation_state")
     (fun x -> exercise_evaluation_state !exercise x)
+
+let machinist_create = function
+  | [ name ] ->
+      call_api "machinist_create" ~posts:[
+        "name", name;
+      ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of machinist_create command.\n";
+    exit 1
+
+let machinist_create_command =
+  process "machinist_create"
+    (options [])
+    ("hjc machinist_create")
+    machinist_create
+
+let machinist_url m = "/machinists/" ^ m
+
+let machinist_upload = function
+  | [ machinist; resource_name; file ] -> begin
+    call_api "machinist_upload" ~forms:[
+      "identifier", (machinist_url machinist);
+      "resource_name", resource_name;
+      "file", "@" ^ file
+    ] []
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of machinist_upload command.\n";
+    exit 1
+
+let machinist_upload_command =
+  process "machinist_upload"
+    (options [])
+    "hjc machinist_upload [ressource_name] [file]"
+    machinist_upload
+
+let machinist_download version = function
+  | [ machinist; name ] ->
+    call_api "machinist_download" ~posts:[
+      "identifier", (machinist_url machinist);
+      "resource_name", name;
+      "version", (version ())
+    ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of machinist_download command.\n";
+    exit 1
+
+let machinist_download_command =
+  let version = ref "" in
+  process "machinist_download"
+    (options [
+      "--version", Arg.Set_string version, " Download a specific version."
+    ])
+    ("hjc machinist_download [resource_name]")
+    (machinist_download (fun () -> !version))
+
+let machinist_ls show_all = function
+  | [ machinist; filter ] ->
+    let options = if show_all () then "--all" else "" in
+    call_api "machinist_ls" ~posts:[
+      "identifier", (machinist_url machinist);
+      "options", options;
+      "filter", filter;
+    ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of machinist_ls command.\n";
+    exit 1
+
+let machinist_ls_command =
+  let show_all = ref false in
+  process "machinist_ls"
+    (options [
+      "--all", Arg.Set show_all, " Show all versions.";
+    ])
+    ("hjc machinist_ls filter")
+    (machinist_ls (fun () -> !show_all))
+
+let rec join2 = function
+  | [] -> []
+  | [x] -> []
+  | x :: y :: xs -> (x, y) :: join2 xs
+
+let machinist_set_logins = function
+  | machinist :: logins ->
+    let logins =
+      String.concat "," (
+        List.map (fun (login, key) -> login ^ ":" ^ key) (join2 logins)
+      )
+    in
+    call_api "machinist_set_logins" ~posts:[
+      "identifier", (machinist_url machinist);
+      "logins", logins;
+    ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of machinist_set_logins command.\n";
+    exit 1
+
+let machinist_set_logins_command =
+  process "machinist_set_logins"
+    (options [])
+    ("hjc machinist_set_logins")
+    machinist_set_logins
+
+let machinist_set_addresses = function
+  | machinist :: addresses ->
+    let addresses =
+      String.concat "," (
+        List.map (fun (ip, port) -> ip ^ ":" ^ port) (join2 addresses)
+      )
+    in
+    call_api "machinist_set_addresses" ~posts:[
+      "identifier", (machinist_url machinist);
+      "addresses", addresses;
+    ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of machinist_set_addresses command.\n";
+    exit 1
+
+let machinist_set_addresses_command =
+  process "machinist_set_addresses"
+    (options [])
+    ("hjc machinist_set_addresses")
+    machinist_set_addresses
+
+let machinist_exec = function
+  | machinist :: command  ->
+    let command = String.concat " " command in
+    call_api "machinist_execute" ~posts:[
+      "identifier", (machinist_url machinist);
+      "command", command;
+    ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of machinist_execute command.\n";
+    exit 1
+
+let machinist_exec_command =
+  process "machinist_execute"
+    (options [])
+    ("hjc machinist_execute")
+    machinist_exec

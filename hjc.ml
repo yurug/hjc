@@ -22,6 +22,14 @@ let _ = run_command [
   exercise_questions_command;
   exercise_answer_command;
   exercise_evaluation_state_command;
+  machinist_create_command;
+  machinist_upload_command;
+  machinist_download_command;
+  machinist_ls_command;
+  machinist_set_logins_command;
+  machinist_set_addresses_command;
+  machinist_exec_command;
+
 ]
   "usage: hjc <command> [<args>]\n\
     \n\
@@ -42,6 +50,13 @@ let _ = run_command [
     \  exercise_questions        Retrieve the questions of an exercise\n\
     \  exercise_answer           Submit an answer to a question\n\
     \  exercise_evaluation_state Get the state of an evaluation\n\
+    \  machinist_create          Create a new machinist\n\
+    \  machinist_upload          Upload a resource for a machinist\n\
+    \  machinist_download        Download a resource of a machinist\n\
+    \  machinist_ls              List the resources of a machinist\n\
+    \  machinist_set_logins      Set the logins of a machinist\n\
+    \  machinist_set_addresses   Set the addresses of a machinist\n\
+    \  machinist_execute         Execute a command through a machinist\n\
     \n\
     See 'hj <command> -help' for more information on a specific command.\n\
     "
