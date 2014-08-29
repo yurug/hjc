@@ -326,7 +326,54 @@ let exercise_questions_command =
   process "exercise_questions"
     (options [
       "--on", Arg.String (set_opt exercise),
-      " Retrieve exercise questions.";
+      " Specify an exercise to focus on.";
     ])
     ("hjc exercise_questions")
     (fun x -> exercise_questions !exercise x)
+
+let exercise_answer exercise = function
+  | [ qid; answer ] ->
+    optional_focus exercise (fun () ->
+      on_exercise (fun exo ->
+      call_api "exercise_push_new_answer" ~posts:[
+        "identifier", exo;
+        "question_identifier", qid;
+        "answer", answer
+      ] [])
+    )
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_answer command.\n";
+    exit 1
+
+let exercise_answer_command =
+  let exercise = ref None in
+  process "exercise_answer"
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Specify an exercise to focus on.";
+    ])
+    ("hjc exercise_answer")
+    (fun x -> exercise_answer !exercise x)
+
+let exercise_evaluation_state exercise = function
+  | [ qid ] ->
+    optional_focus exercise (fun () ->
+      on_exercise (fun exo ->
+      call_api "exercise_evaluation_state" ~posts:[
+        "identifier", exo;
+        "question_identifier", qid;
+      ] [])
+    )
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_evaluation_state command.\n";
+    exit 1
+
+let exercise_evaluation_state_command =
+  let exercise = ref None in
+  process "exercise_evaluation_state"
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Specify an exercise to focus on.";
+    ])
+    ("hjc exercise_evaluation_state")
+    (fun x -> exercise_evaluation_state !exercise x)

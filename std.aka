@@ -27,12 +27,12 @@ data context =
 | QCM (list (statement), list (int))
 
 data questions =
-| Question (template (string), template (statement), template (context))
+| Question (template (string), template (string), template (statement), template (context))
 | Section (template (string), template (questions))
 
 def section title questions = Section title questions
 
-def question id statement context = Question id statement context
+def question id title statement context = Question id title statement context
 
 def text t = Text t
 

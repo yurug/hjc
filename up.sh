@@ -20,3 +20,7 @@ rm -fr `pwd`/test
 ./hjc exercise_update
 
 ./hjc exercise_push --on test exo.aka
+./hjc exercise_questions --on test      
+./hjc exercise_answer --on test q1 "choose:1"
+./hjc exercise_evaluation_state --on test q1 
+
