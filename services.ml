@@ -309,6 +309,28 @@ let exercise_push_command =
     "hjc exercise_push [file]"
     (fun o -> exercise_push !exercise o)
 
+let exercise_subscribe exercise = function
+  | [] ->
+    optional_focus exercise (fun () ->
+      on_exercise (fun exo ->
+      call_api "exercise_subscribe" ~posts:[
+        "identifier", exo;
+      ] [])
+    )
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_subscribe command.\n";
+    exit 1
+
+let exercise_subscribe_command =
+  let exercise = ref None in
+  process "exercise_subscribe"
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Specify an exercise to focus on.";
+    ])
+    ("hjc exercise_subscribe")
+    (fun x -> exercise_subscribe !exercise x)
+
 let exercise_questions exercise = function
   | [] ->
     optional_focus exercise (fun () ->
@@ -517,3 +539,69 @@ let machinist_exec_command =
     (options [])
     ("hjc machinist_execute")
     machinist_exec
+
+let answers_upload exercise = function
+  | [ resource_name; file ] -> begin
+    on_exercise (fun exo ->
+      call_api "answers_upload" ~forms:[
+        "identifier", exo;
+        "resource_name", resource_name;
+        "file", "@" ^ file
+      ] [])
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of answers_upload command.\n";
+    exit 1
+
+let answers_upload_command =
+  let exercise = ref None in
+  process "answers_upload"
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Specify an exercise to focus on.";
+    ])
+    "hjc answers_upload [ressource_name] [file]"
+    (fun x -> answers_upload !exercise x)
+
+let answers_download version = function
+  | [ name ] ->
+    on_exercise (fun exo ->
+      call_api "answers_download" ~posts:[
+        "identifier", exo;
+        "resource_name", name;
+        "version", (version ())
+      ] [])
+  | _ ->
+    Printf.eprintf "Invalid usage of answers_download command.\n";
+    exit 1
+
+let answers_download_command =
+  let version = ref "" in
+  process "answers_download"
+    (options [
+      "--version", Arg.Set_string version, " Download a specific version."
+    ])
+    ("hjc answers_download [resource_name]")
+    (answers_download (fun () -> !version))
+
+let answers_ls show_all = function
+  | [ filter ] ->
+    let options = if show_all () then "--all" else "" in
+    on_exercise (fun exo ->
+      call_api "answers_ls" ~posts:[
+        "identifier", exo;
+        "options", options;
+        "filter", filter;
+      ] [])
+  | _ ->
+    Printf.eprintf "Invalid usage of answers_ls command.\n";
+    exit 1
+
+let answers_ls_command =
+  let show_all = ref false in
+  process "answers_ls"
+    (options [
+      "--all", Arg.Set show_all, " Show all versions.";
+    ])
+    ("hjc answers_ls filter")
+    (answers_ls (fun () -> !show_all))

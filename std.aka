@@ -25,6 +25,7 @@ data statement =
 
 data context =
 | QCM (list (statement), list (int))
+| Grader (template (string), template (string), template (string))
 
 data questions =
 | Question (template (string), template (string), template (statement), template (context))
@@ -51,3 +52,6 @@ def expected_choices t =
   | TCode s t => Cons s (expected_choices t)
   | TNil => Nil
   }
+
+def grader expected_file imported_files command =
+    Grader expected_file imported_files command

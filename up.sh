@@ -22,6 +22,7 @@ rm -fr `pwd`/test
 ./hjc exercise_push --on test exo.aka
 ./hjc exercise_questions --on test      
 ./hjc exercise_answer --on test q1 "choose:1"
+sleep 2
 ./hjc exercise_evaluation_state --on test q1 
 
 ./hjc machinist_create debian
@@ -29,4 +30,9 @@ rm -fr `pwd`/test
 ./hjc machinist_set_logins debian test key1
 ./hjc machinist_set_addresses debian 127.0.0.1 22
 
-
+./hjc exercise_subscribe --on test
+./hjc answers_upload --on test grader.sh grader.sh  
+./hjc answers_upload --on test hello.java hello.java
+./hjc exercise_answer --on test q2 "file:hello.java"
+sleep 3
+./hjc exercise_evaluation_state --on test q2      
