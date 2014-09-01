@@ -127,7 +127,7 @@ let exercise_create_command =
     exercise_create
 
 let exercise_url exercise =
-  "/exercise/" ^ exercise
+  "/aka/" ^ exercise
 
 let exercise_focus = function
   | [ exercise ] ->

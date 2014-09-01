@@ -31,7 +31,7 @@ sleep 2
 ./hjc machinist_set_addresses debian 127.0.0.1 22
 
 ./hjc exercise_subscribe --on test
-./hjc answers_upload --on test grader.sh grader.sh  
+./hjc exercise_upload grader.sh grader.sh  
 ./hjc answers_upload --on test hello.java hello.java
 ./hjc exercise_answer --on test q2 "file:hello.java"
 sleep 3
