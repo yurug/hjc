@@ -18,6 +18,7 @@ let _ = run_command [
   exercise_download_command;
   exercise_ls_command;
   exercise_update_command;
+  exercise_refresh_command;
   exercise_push_command;
   exercise_questions_command;
   exercise_subscribe_command;
@@ -51,6 +52,7 @@ let _ = run_command [
     \  exercise_ls               List the resources of an exercise\n\
     \  exercise_update           Trigger the update of an exercise code\n\
     \  exercise_push             Upload and update an exercise code\n\
+    \  exercise_refresh          Refresh the evaluations of an exercise\n\
     \  exercise_questions        Retrieve the questions of an exercise\n\
     \  exercise_subscribe        Subscribe to an exercise\n\
     \  exercise_answer           Submit an answer to a question\n\

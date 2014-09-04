@@ -309,6 +309,27 @@ let exercise_push_command =
     "hjc exercise_push [file]"
     (fun o -> exercise_push !exercise o)
 
+let exercise_refresh exercise = function
+  | [] -> optional_focus exercise (fun () ->
+    on_exercise (fun exo ->
+      call_api "exercise_refresh_evaluations" ~posts:[
+        "identifier", exo
+      ] [])
+  )
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_refresh command.\n";
+    exit 1
+
+let exercise_refresh_command =
+  let exercise = ref None in
+  process "exercise_refresh"
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Specify an exercise to focus on.";
+    ])
+    "hjc exercise_refresh"
+    (fun o -> exercise_refresh !exercise o)
+
 let exercise_subscribe exercise = function
   | [] ->
     optional_focus exercise (fun () ->

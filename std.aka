@@ -24,16 +24,32 @@ data statement =
 | Text (template (text))
 
 data context =
-| QCM (list (statement), list (int))
+| QCM    (list (statement), list (int))
 | Grader (template (string), template (string), template (string))
 
+data question = {
+  id         : template (string);
+  title      : template (string);
+  tags       : template (string);
+  difficulty : int;
+  statement  : template (statement);
+  context    : template (context)
+}
+
 data questions =
-| Question (template (string), template (string), template (statement), template (context))
+| Question (question)
 | Section (template (string), template (questions))
 
 def section title questions = Section title questions
 
-def question id title statement context = Question id title statement context
+def question id title tags difficulty statement context = Question {
+  id = id;
+  title = title;
+  tags = tags;
+  difficulty = difficulty;
+  statement = statement;
+  context = context
+}
 
 def text t = Text t
 
@@ -50,7 +66,7 @@ def expected_choices t =
      integers. *}
   | TAtom s t => expected_choices t
   | TCode s t => Cons s (expected_choices t)
-  | TNil => Nil
+  | TNil      => Nil
   }
 
 def grader expected_file imported_files command =
