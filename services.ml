@@ -184,7 +184,7 @@ let on_exercise f =
 let update = function
   | [ file ] ->
     on_exercise (fun exo ->
-      let postprocess = Printf.sprintf "sed s/this/%s/g" file in
+      let postprocess = Printf.sprintf "sed s,this,'%s',g" file in
       call_api ~postprocess "update" ~forms:[
         "id", exo;
         "content", "@" ^ file
@@ -218,6 +218,24 @@ let exercise_upload_command =
     (options [])
     "hjc exercise_upload [ressource_name] [file]"
     exercise_upload
+
+let exercise_upload_tar = function
+  | [ file ] -> begin
+    on_exercise (fun exo ->
+      call_api "exercise_upload_tar" ~forms:[
+        "identifier", exo;
+        "file", "@" ^ file
+      ] [])
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_upload_tar command.\n";
+    exit 1
+
+let exercise_upload_tar_command =
+  process "exercise_upload_tar"
+    (options [])
+    "hjc exercise_upload_tar [tarball]"
+    exercise_upload_tar
 
 let exercise_download version = function
   | [ name ] ->
@@ -291,7 +309,7 @@ let optional_focus e f =
 
 let exercise_push exercise = function
   | [ file ] -> optional_focus exercise (fun () ->
-    let postprocess = Printf.sprintf "sed s/this/%s/g" file in
+    let postprocess = Printf.sprintf "sed s,this,'%s',g" file in
     exercise_upload [ "source.aka"; file ];
     exercise_update ~postprocess []
   )
@@ -373,6 +391,28 @@ let exercise_questions_command =
     ])
     ("hjc exercise_questions")
     (fun x -> exercise_questions !exercise x)
+
+let exercise_questions_latex exercise = function
+  | [] ->
+    optional_focus exercise (fun () ->
+      on_exercise (fun exo ->
+      call_api "exercise_questions_latex" ~posts:[
+        "identifier", exo
+      ] [])
+    )
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_questions_latex command.\n";
+    exit 1
+
+let exercise_questions_latex_command =
+  let exercise = ref None in
+  process "exercise_questions_latex"
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Specify an exercise to focus on.";
+    ])
+    ("hjc exercise_questions_latex")
+    (fun x -> exercise_questions_latex !exercise x)
 
 let exercise_answer exercise = function
   | [ qid; answer ] ->

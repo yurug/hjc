@@ -1,6 +1,3 @@
-data questions_target =
-| ForUser (string)
-
 data list ('a) =
 | Nil
 | Cons ('a, list ('a))
@@ -14,18 +11,27 @@ data boolean =
 | True
 | False
 
-data text = {
-  bold   : boolean;
-  italic : boolean;
-  value  : string
-}
+data text =
+| String   (template (string))
+| Bold     (template (text))
+| Italic   (template (text))
+| Code     (template (string))
+| LaTeX    (template (string))
+| Hlink    (template (string), template (string))
+| RawHTML  (template (string))
+| RawLaTeX (template (string))
 
 data statement =
-| Text (template (text))
+| Paragraph (template (text))
+| Verbatim  (template (string))
+| CodeBlock (template (string), template (string))
 
 data context =
-| QCM    (list (statement), list (int))
-| Grader (template (string), template (string), template (string))
+| QCM     (list (template (text)), list (int))
+| WITV    (list (template (text)), list (string), template (string))
+| Grader  (template (string), template (string), template (string))
+| Chooser (list (string))
+| NoGrade
 
 data question = {
   id         : template (string);
@@ -40,6 +46,32 @@ data questions =
 | Question (question)
 | Section (template (string), template (questions))
 
+data exercise = {
+  etitle     : template (string);
+  group_tags : template (string);
+  questions  : template (questions)
+}
+
+def exercise t gt qs = {
+  etitle = t;
+  group_tags = gt;
+  questions = qs
+}
+
+def bold x = Bold x
+
+def italic x = Italic x
+
+def code x = Code x
+
+def latex x = LaTeX x
+
+def hlink url caption = Hlink url caption
+
+def raw_html x = RawHTML x
+
+def raw_latex x = RawLaTeX x
+
 def section title questions = Section title questions
 
 def question id title tags difficulty statement context = Question {
@@ -51,14 +83,40 @@ def question id title tags difficulty statement context = Question {
   context = context
 }
 
-def text t = Text t
+def paragraph t = Paragraph t
 
-def choices t =
+def codeblock l t = CodeBlock l t
+
+def verbatim t = Verbatim t
+
+def text t =
   t ? {
-  | TAtom s t => Cons (Text (TAtom s TNil)) (choices t)
-  | TCode s t => Cons s (choices t)
+  | TAtom s t => TCode (String (TCode s TNil)) (text t)
+  | TCode s t => TCode s (text t)
+  | TNil => TNil
+  }
+
+def text_template_template_to_text_template_list t =
+  t ? {
+  | TAtom s t =>
+    Cons (TCode (String (TAtom s TNil)) TNil) (
+      text_template_template_to_text_template_list t
+    )
+  | TCode s t =>
+    Cons s (text_template_template_to_text_template_list t)
+
+  | TNil =>
+    Nil
+  }
+
+def string_template_to_string_list t =
+  t ? {
+  | TAtom s t => Cons s (string_template_to_string_list t)
+  | TCode s t => Cons s (string_template_to_string_list t)
   | TNil => Nil
   }
+
+def choices t = text_template_template_to_text_template_list t
 
 def expected_choices t =
   t ? {
@@ -71,3 +129,49 @@ def expected_choices t =
 
 def grader expected_file imported_files command =
     Grader expected_file imported_files command
+
+external string_append : string -> string -> string
+
+def flatten_string t =
+    t ? {
+    | TAtom s t => string_append s (flatten_string t)
+    | TCode s t => string_append s (flatten_string t)
+    | TNil => ""
+    }
+
+def what_is_the_value_of es vs cmp = WITV es vs cmp
+
+def expressions x = text_template_template_to_text_template_list x
+
+def values x = string_template_to_string_list x
+
+def compare_with x = x
+
+def choose_between x = Chooser x
+
+def alternatives t = string_template_to_string_list t
+
+def no_grade = NoGrade
+
+def document id title statement =
+    question id title [] 0 statement [[no_grade]]
+
+data user
+
+external user_has_tag : user -> string -> boolean
+
+def user_has_one_tag_in_this_tag_list u l =
+  l ? {
+  | Nil => False
+  | Cons t ts => u `user_has_tag t ? {
+    | True => True
+    | False => u `user_has_one_tag_in_this_tag_list ts
+    }
+  }
+
+def user_has_one_of_these_tags u l =
+    u `user_has_one_tag_in_this_tag_list (string_template_to_string_list l)
+
+data questions_target =
+| ForUser (user)
+

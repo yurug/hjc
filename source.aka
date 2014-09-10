@@ -6,7 +6,3 @@ def g = { => y }
 def z = f x y
 
 import /std
-
-def t = [Yo [z] Man]
-
-def t2 = [[ Yo [[z]] [Man] ]]
