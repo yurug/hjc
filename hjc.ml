@@ -7,6 +7,7 @@ open Services
 
 let _ = run_command [
   register_command;
+  update_password_command;
   login_command;
   logout_command;
   whoami_command;
@@ -41,7 +42,8 @@ let _ = run_command [
   "usage: hjc <command> [<args>]\n\
     \n\
     The available commands are:\n\
-    \  register                  Register\n\
+    \  register                  Register \n\
+    \  update_password           Update password\n\
     \  login                     Authenticate the user on the hacking dojo\n\
     \  logout                    Exit the hacking dojo\n\
     \  whoami                    Returns the authenticated user login\n\

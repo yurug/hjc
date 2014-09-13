@@ -113,6 +113,19 @@ let get_user_info_command =
     ("hjc get_user_info [cmd]")
     get_user_info
 
+let update_password = function
+  | [ login ] ->
+    call_api "update_password" ~posts:["login", login] []
+  | _ ->
+    Printf.eprintf "Invalid usage of update_password command.\n";
+    exit 1
+
+let update_password_command =
+  process "update_password"
+    (options [])
+    ("hjc update_password [login]")
+    update_password
+
 let exercise_create = function
   | [ name ] ->
     call_api "exercise_create" ~posts:["name", name] []
