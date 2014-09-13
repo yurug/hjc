@@ -175,3 +175,10 @@ def user_has_one_of_these_tags u l =
 data questions_target =
 | ForUser (user)
 
+data notification
+
+external notify_all_user : list (string) -> notification -> unit
+
+external message : statement -> notification
+
+external goto_exercise : template (string) -> statement -> notification
