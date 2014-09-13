@@ -66,10 +66,15 @@ let no_extra_arguments f = function
     exit 1
 
 let run_command cs general_usage_msg =
-  try
+  let print_usage_and_exit () =
+    Printf.eprintf "%s\n%!" general_usage_msg;
+    exit 1
+  in
+  if Array.length Sys.argv <= 1 then print_usage_and_exit ()
+  else try
     List.assoc Sys.argv.(1) cs Sys.argv.(1)
   with e ->
     Printf.eprintf "Error: %s\n" (Printexc.to_string e);
-    exit 1
+    print_usage_and_exit ()
 
 let set_opt r x = (r := Some x)
