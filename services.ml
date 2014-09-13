@@ -113,6 +113,32 @@ let get_user_info_command =
     ("hjc get_user_info [cmd]")
     get_user_info
 
+let set_admin_email = function
+  | [ cmd ] ->
+    call_api "set_admin_email" ~posts:["email", cmd] []
+  | _ ->
+    Printf.eprintf "Invalid usage of set_admin_email command.\n";
+    exit 1
+
+let set_admin_email_command =
+  process "set_admin_email"
+    (options [])
+    ("hjc set_admin_email [email]")
+    set_admin_email
+
+let set_mailer = function
+  | [ cmd ] ->
+    call_api "set_mailer" ~posts:["cmd", cmd] []
+  | _ ->
+    Printf.eprintf "Invalid usage of set_mailer command.\n";
+    exit 1
+
+let set_mailer_command =
+  process "set_mailer"
+    (options [])
+    ("hjc set_mailer [cmd]")
+    set_mailer
+
 let update_password = function
   | [ login ] ->
     call_api "update_password" ~posts:["login", login] []

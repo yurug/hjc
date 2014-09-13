@@ -13,6 +13,8 @@ let _ = run_command [
   whoami_command;
   chroot_command;
   get_user_info_command;
+  set_mailer_command;
+  set_admin_email_command;
   exercise_create_command;
   exercise_focus_command;
   exercise_upload_command;
