@@ -20,6 +20,8 @@ let _ = run_command [
   exercise_upload_command;
   exercise_upload_tar_command;
   exercise_download_command;
+  exercise_publish_command;
+  exercise_unpublish_command;
   exercise_ls_command;
   exercise_update_command;
   exercise_refresh_command;

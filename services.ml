@@ -297,6 +297,30 @@ let exercise_download_command =
     ("hjc exercise_download [resource_name]")
     (exercise_download (fun () -> !version))
 
+let exercise_publish status = function
+  | [ name ] ->
+    on_exercise (fun exo ->
+      call_api "exercise_publish" ~posts:[
+        "identifier", exo;
+        "resource_name", name;
+        "status", status
+      ] [])
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_publish command.\n";
+    exit 1
+
+let exercise_publish_command =
+  process "exercise_publish"
+    (options [])
+    ("hjc exercise_publish [resource_name]")
+    (exercise_publish "1")
+
+let exercise_unpublish_command =
+  process "exercise_unpublish"
+    (options [])
+    ("hjc exercise_unpublish [resource_name]")
+    (exercise_publish "0")
+
 let exercise_ls show_all = function
   | [ filter ] ->
     let options = if show_all () then "--all" else "" in

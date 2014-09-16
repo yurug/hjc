@@ -75,6 +75,6 @@ let run_command cs general_usage_msg =
     List.assoc Sys.argv.(1) cs Sys.argv.(1)
   with e ->
     Printf.eprintf "Error: %s\n" (Printexc.to_string e);
-    print_usage_and_exit ()
+    exit 1
 
 let set_opt r x = (r := Some x)
