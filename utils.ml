@@ -29,7 +29,15 @@ let curl ?postprocess ?(forms = []) ?posts url =
         | None -> ""
         | Some cmd -> "| " ^ cmd)
   in
-  Yojson.Safe.from_channel (Unix.open_process_in cmd)
+  let read cin =
+    let b = Buffer.create 23 in
+    let rec aux () = Buffer.add_channel b cin 1; aux () in
+    try aux () with _ -> Buffer.contents b
+  in
+  let s = read (Unix.open_process_in cmd) in
+  try
+    Yojson.Safe.from_string s
+  with _ -> `String s
 
 let call_api service ?postprocess ?forms ?posts gets =
   curl
@@ -75,6 +83,9 @@ let run_command cs general_usage_msg =
     List.assoc Sys.argv.(1) cs Sys.argv.(1)
   with e ->
     Printf.eprintf "Error: %s\n" (Printexc.to_string e);
+    Printf.eprintf "During the execution of `%s'\n" (
+      String.(concat " " (Array.to_list Sys.argv))
+    );
     exit 1
 
 let set_opt r x = (r := Some x)
