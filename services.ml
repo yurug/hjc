@@ -100,6 +100,19 @@ let chroot_command =
     ("hjc chroot [path]")
     chroot
 
+let shutdown = function
+  | [] ->
+    call_api "shutdown" ~posts:[] []
+  | _ ->
+    Printf.eprintf "Invalid usage of shutdown command.\n";
+    exit 1
+
+let shutdown_command =
+  process "shutdown"
+    (options [])
+    ("hjc shutdown")
+    shutdown
+
 let get_user_info = function
   | [ cmd ] ->
     call_api "get_user_info" ~posts:["cmd", cmd] []

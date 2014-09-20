@@ -12,6 +12,7 @@ let _ = run_command [
   logout_command;
   whoami_command;
   chroot_command;
+  shutdown_command;
   get_user_info_command;
   set_mailer_command;
   set_admin_email_command;
@@ -52,6 +53,7 @@ let _ = run_command [
     \  logout                    Exit the hacking dojo\n\
     \  whoami                    Returns the authenticated user login\n\
     \  chroot                    Change the root of the system\n\
+    \  shutdown                  Shut the system down\n\
     \  get_user_info             Set get_user_info command\n\
     \  exercise_create           Create a fresh exercise\n\
     \  exercise_focus            Focus on an exercise\n\
