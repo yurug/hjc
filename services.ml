@@ -537,6 +537,30 @@ let exercise_evaluation_state_command =
     ("hjc exercise_evaluation_state")
     (fun x -> exercise_evaluation_state !exercise x)
 
+let exercise_user_answers exercise = function
+  | [ uid ] ->
+    optional_focus exercise (fun () ->
+      on_exercise (fun exo ->
+      call_api "exercise_answers_of_user" ~posts:[
+        "identifier", exo;
+        "uid", uid;
+      ] [])
+    )
+  | _ ->
+    Printf.eprintf "Invalid usage of exercise_user_answers command.\n";
+    exit 1
+
+let exercise_user_answers_command =
+  let exercise = ref None in
+  process "exercise_user_answers"
+    (options [
+      "--on", Arg.String (set_opt exercise),
+      " Specify an exercise to focus on.";
+    ])
+    ("hjc exercise_user_answers")
+    (fun x -> exercise_user_answers !exercise x)
+
+
 let machinist_create = function
   | [ name ] ->
       call_api "machinist_create" ~posts:[

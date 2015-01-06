@@ -31,6 +31,7 @@ let _ = run_command [
   exercise_questions_latex_command;
   exercise_subscribe_command;
   exercise_answer_command;
+  exercise_user_answers_command;
   exercise_evaluation_state_command;
   answers_upload_command;
   answers_download_command;
@@ -68,6 +69,7 @@ let _ = run_command [
     \  exercise_questions_latex  Retrieve the LaTeX of an exercise\n\
     \  exercise_subscribe        Subscribe to an exercise\n\
     \  exercise_answer           Submit an answer to a question\n\
+    \  exercise_user_answers     Get the answers of a user\n\
     \  exercise_evaluation_state Get the state of an evaluation\n\
     \  answers_upload            Upload a resource for an exercise answers\n\
     \  answers_download          Download a resource of an exercise answers\n\
