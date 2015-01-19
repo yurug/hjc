@@ -767,3 +767,109 @@ let answers_ls_command =
     ("hjc answers_ls filter")
     (answers_ls (fun () -> !show_all))
 
+let teamer_create = function
+  | [ name ] ->
+      call_api "teamer_create" ~posts:[
+        "name", name;
+      ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of teamer_create command.\n";
+    exit 1
+
+let teamer_create_command =
+  process "teamer_create"
+    (options [])
+    ("hjc teamer_create")
+    teamer_create
+
+let teamer_url m = "/teamer/" ^ m
+
+let teamer_update ?postprocess = function
+  | [teamer] ->
+    call_api ?postprocess "teamer_update" ~posts:[
+        "identifier", (teamer_url teamer)
+      ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of teamer_update command.\n";
+    exit 1
+
+let teamer_update_command =
+  process "teamer_update"
+    (options [])
+    ("hjc teamer_update [teamer]")
+    teamer_update
+
+let teamer_upload = function
+  | [ teamer; resource_name; file ] -> begin
+    call_api "teamer_upload" ~forms:[
+      "identifier", (teamer_url teamer);
+      "resource_name", resource_name;
+      "file", "@" ^ file
+    ] []
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of teamer_upload command.\n";
+    exit 1
+
+let teamer_upload_command =
+  process "teamer_upload"
+    (options [])
+    "hjc teamer_upload [teamer] [ressource_name] [file]"
+    teamer_upload
+
+let teamer_reserve_for_user = function
+  | [ teamer; sid; uid; slot ] -> begin
+    call_api "teamer_reserve_for_user" ~forms:[
+      "identifier", (teamer_url teamer);
+      "sid", sid;
+      "uid", uid;
+      "slot", slot
+    ] []
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of teamer_reserve_for_user command.\n";
+    exit 1
+
+let teamer_reserve_for_user_command =
+  process "teamer_reserve_for_user"
+    (options [])
+    "hjc teamer_reserve_for_user [teamer_id] [sid] [uid] [slot]"
+    teamer_reserve_for_user
+
+let teamer_confirm_for_user = function
+  | [ teamer; sid; uid; slot ] -> begin
+    call_api "teamer_confirm_for_user" ~forms:[
+      "identifier", (teamer_url teamer);
+      "sid", sid;
+      "uid", uid;
+      "slot", slot
+    ] []
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of teamer_confirm_for_user command.\n";
+    exit 1
+
+let teamer_confirm_for_user_command =
+  process "teamer_confirm_for_user"
+    (options [])
+    "hjc teamer_confirm_for_user [teamer_id] [sid] [uid] [slot]"
+    teamer_confirm_for_user
+
+let teamer_withdraw_for_user = function
+  | [ teamer; sid; uid; slot ] -> begin
+    call_api "teamer_withdraw_for_user" ~forms:[
+      "identifier", (teamer_url teamer);
+      "sid", sid;
+      "uid", uid;
+      "slot", slot
+    ] []
+  end
+  | _ ->
+    Printf.eprintf "Invalid usage of teamer_withdraw_for_user command.\n";
+    exit 1
+
+let teamer_withdraw_for_user_command =
+  process "teamer_withdraw_for_user"
+    (options [])
+    "hjc teamer_withdraw_for_user [teamer_id] [sid] [uid] [slot]"
+    teamer_withdraw_for_user

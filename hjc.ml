@@ -44,6 +44,13 @@ let _ = run_command [
   machinist_set_addresses_command;
   machinist_exec_command;
 
+  teamer_create_command;
+  teamer_update_command;
+  teamer_upload_command;
+  teamer_reserve_for_user_command;
+  teamer_confirm_for_user_command;
+  teamer_withdraw_for_user_command;
+
 ]
   "usage: hjc <command> [<args>]\n\
     \n\
@@ -81,6 +88,10 @@ let _ = run_command [
     \  machinist_set_logins      Set the logins of a machinist\n\
     \  machinist_set_addresses   Set the addresses of a machinist\n\
     \  machinist_execute         Execute a command through a machinist\n\
+    \  teamer_create             Create a new teamer\n\
+    \  teamer_update             Update a teamer\n\
+    \  teamer_upload             Upload a teamer resource\n\
+    \  teamer_reserve_for_user   Reserve a team slot for a user\n\
     \n\
     See 'hj <command> -help' for more information on a specific command.\n\
     "
