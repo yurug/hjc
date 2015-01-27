@@ -799,6 +799,21 @@ let teamer_update_command =
     ("hjc teamer_update [teamer]")
     teamer_update
 
+let teamer_versions ?postprocess = function
+  | [teamer] ->
+    call_api ?postprocess "teamer_versions" ~posts:[
+        "identifier", (teamer_url teamer)
+      ] []
+  | _ ->
+    Printf.eprintf "Invalid usage of teamer_versions command.\n";
+    exit 1
+
+let teamer_versions_command =
+  process "teamer_versions"
+    (options [])
+    ("hjc teamer_versions [teamer]")
+    teamer_update
+
 let teamer_upload = function
   | [ teamer; resource_name; file ] -> begin
     call_api "teamer_upload" ~forms:[

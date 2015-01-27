@@ -46,6 +46,7 @@ let _ = run_command [
 
   teamer_create_command;
   teamer_update_command;
+  teamer_versions_command;
   teamer_upload_command;
   teamer_reserve_for_user_command;
   teamer_confirm_for_user_command;
@@ -90,6 +91,7 @@ let _ = run_command [
     \  machinist_execute         Execute a command through a machinist\n\
     \  teamer_create             Create a new teamer\n\
     \  teamer_update             Update a teamer\n\
+    \  teamer_versions           Get all the versions of a teamer\n\
     \  teamer_upload             Upload a teamer resource\n\
     \  teamer_reserve_for_user   Reserve a team slot for a user\n\
     \n\
