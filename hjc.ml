@@ -8,6 +8,7 @@ open Services
 let _ = run_command [
   register_command;
   update_password_command;
+  set_password_command;
   login_command;
   logout_command;
   whoami_command;
@@ -57,7 +58,8 @@ let _ = run_command [
     \n\
     The available commands are:\n\
     \  register                  Register \n\
-    \  update_password           Update password\n\
+    \  update_password           Send password update link\n\
+    \  set_password	         Set password\n\
     \  login                     Authenticate the user on the hacking dojo\n\
     \  logout                    Exit the hacking dojo\n\
     \  whoami                    Returns the authenticated user login\n\

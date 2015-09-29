@@ -165,6 +165,22 @@ let update_password_command =
     ("hjc update_password [login]")
     update_password
 
+let digest password =
+  Digest.string ("hj:" ^ password ^ ":")
+
+let set_password = function
+  | [ login; password ] ->
+    call_api "set_password" ~posts:["login", login; "password", digest password] []
+  | _ ->
+    Printf.eprintf "Invalid usage of set_password command.\n";
+    exit 1
+
+let set_password_command =
+  process "set_password"
+    (options [])
+    ("hjc set_password [login] [password]")
+    set_password
+
 let exercise_create = function
   | [ name ] ->
     call_api "exercise_create" ~posts:["name", name] []
