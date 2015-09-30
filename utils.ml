@@ -34,6 +34,7 @@ let curl ?postprocess ?(forms = []) ?posts url =
     let rec aux () = Buffer.add_channel b cin 1; aux () in
     try aux () with _ -> Buffer.contents b
   in
+  log cmd;
   let s = read (Unix.open_process_in cmd) in
   try
     Yojson.Safe.from_string s

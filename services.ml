@@ -166,11 +166,11 @@ let update_password_command =
     update_password
 
 let digest password =
-  Digest.string ("hj:" ^ password ^ ":")
+  Digest.(to_hex (string ("hj:" ^ password ^ ":")))
 
 let set_password = function
   | [ login; password ] ->
-    call_api "set_password" ~posts:["login", login; "password", digest password] []
+    call_api "set_password" ~posts:["login", login; "password_digest", digest password] []
   | _ ->
     Printf.eprintf "Invalid usage of set_password command.\n";
     exit 1
