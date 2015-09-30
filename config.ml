@@ -2,7 +2,7 @@ let curl_executable = "curl"
 let cookie_file     = Filename.concat (Sys.getenv "HOME") ".hjc-cookies"
 let state_file      = Filename.concat (Sys.getenv "HOME") ".hjc.state"
 
-let verbose_mode = ref true
+let verbose_mode = ref false
 
 let state : (string, string) Hashtbl.t ref = ref (Hashtbl.create 1)
 
