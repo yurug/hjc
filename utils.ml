@@ -10,8 +10,7 @@ let command cmd =
 
 let _ = command (Printf.sprintf "touch %s" cookie_file)
 
-(* FIXME: Remove this dependency. It is due to Url.make_encoded_parameters. *)
-open Ocsigen_lib
+let make_encoded_parameters = Netencoding.Url.mk_url_encoded_parameters
 
 let curl ?postprocess ?(forms = []) ?posts url =
   let forms =
@@ -19,7 +18,7 @@ let curl ?postprocess ?(forms = []) ?posts url =
       (List.map (fun (k, v) -> Printf.sprintf "--form %s=%s" k v) forms)
   in
   let posts = match posts with
-    | Some s -> Printf.sprintf "--data \"%s\"" (Url.make_encoded_parameters s)
+    | Some s -> Printf.sprintf "--data \"%s\"" (make_encoded_parameters s)
     | None -> ""
   in
   let cmd =
@@ -43,7 +42,7 @@ let curl ?postprocess ?(forms = []) ?posts url =
 let call_api service ?postprocess ?forms ?posts gets =
   curl
     (get_url () ^ "/" ^ service
-     ^ (if gets = [] then "" else "?" ^ Url.make_encoded_parameters gets))
+     ^ (if gets = [] then "" else "?" ^ make_encoded_parameters gets))
     ?postprocess
     ?forms
     ?posts
